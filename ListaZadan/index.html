@@ -10,9 +10,9 @@
 <body>
     
     <header>
-        <form id="newTask">
-			<input type="text" id="newTaskInput" placeholder="wpisz cos">
-			<input type="submit" class="addNewTask" value="Dodaj">
+        <form id="newTask" class="newTask">
+			<input type="text" id="newTaskInput" class="newTaskInput" placeholder="wpisz cos">
+			<input type="submit" class="button" value="Dodaj">
 		</form>
     </header>
     <main>
@@ -37,20 +37,35 @@
 
         class Node{
             tekst;
+            clicked = false;
             constructor(tekst){
                 this.tekst = tekst;
             }
+            
 
             createDiv(){
                 var task = document.createElement("div");
                 task.classList.add("task");
+                task.onclick = function(){
+                    this.clicked = !this.clicked;
+                    if(this.clicked){
+                        task.classList.add("clicked");
+                    }else{
+                        task.classList.remove("clicked");
+                    }
+                }
+
+                
 
                 var taskInput = document.createElement("input");
                 taskInput.type = 'text';
+                taskInput.classList.add("taskInput");
                 taskInput.value = this.tekst;
                 taskInput.setAttribute('readonly', 'readonly');
 
                 const del = document.createElement('button');
+                del.classList.add("button");
+                del.classList.add("del");
                 del.innerText = 'usun';
 
                 task.appendChild(taskInput);
