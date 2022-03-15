@@ -28,54 +28,65 @@
         var form = document.querySelector("#newTask");
         var input = document.querySelector("#newTaskInput");
 
+        
+
         form.addEventListener('submit', (e) =>{
             e.preventDefault();
 
-            var n = new Node(input.value);
+            var n = new Task(input.value, false);
             n.createDiv();
         });
 
-        class Node{
+        for(let i = 0; i < localStorage.length; i++){
+            console.log(localStorage.getItem(i));
+        }
+
+        class Task{
             tekst;
-            clicked = false;
-            constructor(tekst){
+            clicked;
+            info;
+
+            constructor(tekst, clicked){
                 this.tekst = tekst;
+                this.clicked = clicked;
+
+                this.info = {tekst:tekst, clicked:clicked};
+                
+
+                console.log(this.info);
             }
-            
 
             createDiv(){
                 var task = document.createElement("div");
-                task.classList.add("task");
-                task.onclick = function(){
-                    this.clicked = !this.clicked;
-                    if(this.clicked){
-                        task.classList.add("clicked");
-                    }else{
-                        task.classList.remove("clicked");
-                    }
-                }
-
-                
-
                 var taskInput = document.createElement("input");
-                taskInput.type = 'text';
-                taskInput.classList.add("taskInput");
-                taskInput.value = this.tekst;
-                taskInput.setAttribute('readonly', 'readonly');
-
                 const del = document.createElement('button');
-                del.classList.add("button");
-                del.classList.add("del");
-                del.innerText = 'usun';
+
+                task.classList.add("task");
+
+                taskInput.classList.add("taskInput");
+                taskInput.type = 'text';
+                taskInput.setAttribute('readonly', 'readonly');
+                taskInput.value = this.tekst;
+                console.log(this.tekst);
 
                 task.appendChild(taskInput);
                 task.appendChild(del);
-
                 list.appendChild(task);
-                
+
                 del.addEventListener('click', (e) => {
                     list.removeChild(task);
                 });
+                
+
+                task.onclick = this.changeStatus(task);
+            }
+            changeStatus(task){
+                this.clicked = !this.clicked;
+                if(this.clicked){
+                    task.classList.add("clicked");
+                }else{
+                    task.classList.remove("clicked");
+                }
             }
         }
     </script>
