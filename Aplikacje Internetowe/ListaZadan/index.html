@@ -33,13 +33,8 @@
         form.addEventListener('submit', (e) =>{
             e.preventDefault();
 
-            var n = new Task(input.value, false);
-            n.createDiv();
+            var tempTask = new Task(input.value, false);
         });
-
-        for(let i = 0; i < localStorage.length; i++){
-            console.log(localStorage.getItem(i));
-        }
 
         class Task{
             tekst;
@@ -49,46 +44,32 @@
             constructor(tekst, clicked){
                 this.tekst = tekst;
                 this.clicked = clicked;
+                this.info = {tekst: tekst, clicked: clicked};
 
-                this.info = {tekst:tekst, clicked:clicked};
-                
-
-                console.log(this.info);
+                this.createDiv();
             }
 
             createDiv(){
-                var task = document.createElement("div");
-                var taskInput = document.createElement("input");
-                const del = document.createElement('button');
+                var that = this;
+                var mainDiv = document.createElement('div');
+                mainDiv.innerHTML = this.tekst;
 
-                task.classList.add("task");
-
-                taskInput.classList.add("taskInput");
-                taskInput.type = 'text';
-                taskInput.setAttribute('readonly', 'readonly');
-                taskInput.value = this.tekst;
-                console.log(this.tekst);
-
-                task.appendChild(taskInput);
-                task.appendChild(del);
-                list.appendChild(task);
-
-                del.addEventListener('click', (e) => {
-                    list.removeChild(task);
-                });
+                var button = document.createElement('button');
                 
-
-                task.onclick = this.changeStatus(task);
-            }
-            changeStatus(task){
-                this.clicked = !this.clicked;
-                if(this.clicked){
-                    task.classList.add("clicked");
-                }else{
-                    task.classList.remove("clicked");
+                button.onclick = function(){
+                    list.removeChild(mainDiv);
                 }
+
+                mainDiv.onclick = function(){
+                    that.clicked = !that.clicked;
+                    that.info.clicked = that.clicked;
+                }
+
+                mainDiv.appendChild(button);
+                list.appendChild(mainDiv);
             }
         }
+        
     </script>
 
 </body>
