@@ -53,7 +53,6 @@
             }
 
             createDiv(){
-                
                 var that = this;
                 var mainDiv = document.createElement('div');
                 mainDiv.innerHTML = this.tekst;
@@ -67,15 +66,15 @@
                 mainDiv.onclick = function(){
                     that.clicked = !that.clicked;
                     that.info.clicked = that.clicked;
+
                     console.log(storage);
+
                 }
 
                 mainDiv.appendChild(button);
                 list.appendChild(mainDiv);
             }
         }
-
-        
         
     </script>
 
