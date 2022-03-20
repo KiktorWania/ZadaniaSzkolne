@@ -24,71 +24,59 @@
 
     <script>
         
+        var storage = localStorage;
+
         var list = document.querySelector("#tasks");
         var form = document.querySelector("#newTask");
-        var input = document.querySelector("#newTaskInput");
-
-        
+        var input = document.querySelector("#newTaskInput");        
 
         form.addEventListener('submit', (e) =>{
             e.preventDefault();
 
-            var n = new Task(input.value, false);
-            n.createDiv();
+            var tempTask = new Task(input.value, false);
+            storage.setItem(tempTask.id, tempTask.info);
         });
-
-        for(let i = 0; i < localStorage.length; i++){
-            console.log(localStorage.getItem(i));
-        }
 
         class Task{
             tekst;
             clicked;
             info;
+            id = 0;
 
             constructor(tekst, clicked){
+                this.id++;
                 this.tekst = tekst;
                 this.clicked = clicked;
+                this.info = {tekst: tekst, clicked: clicked};
 
-                this.info = {tekst:tekst, clicked:clicked};
-                
-
-                console.log(this.info);
+                this.createDiv();
             }
 
             createDiv(){
-                var task = document.createElement("div");
-                var taskInput = document.createElement("input");
-                const del = document.createElement('button');
-
-                task.classList.add("task");
-
-                taskInput.classList.add("taskInput");
-                taskInput.type = 'text';
-                taskInput.setAttribute('readonly', 'readonly');
-                taskInput.value = this.tekst;
-                console.log(this.tekst);
-
-                task.appendChild(taskInput);
-                task.appendChild(del);
-                list.appendChild(task);
-
-                del.addEventListener('click', (e) => {
-                    list.removeChild(task);
-                });
                 
+                var that = this;
+                var mainDiv = document.createElement('div');
+                mainDiv.innerHTML = this.tekst;
 
-                task.onclick = this.changeStatus(task);
-            }
-            changeStatus(task){
-                this.clicked = !this.clicked;
-                if(this.clicked){
-                    task.classList.add("clicked");
-                }else{
-                    task.classList.remove("clicked");
+                var button = document.createElement('button');
+                
+                button.onclick = function(){
+                    list.removeChild(mainDiv);
                 }
+
+                mainDiv.onclick = function(){
+                    that.clicked = !that.clicked;
+                    that.info.clicked = that.clicked;
+                    console.log(storage);
+                }
+
+                mainDiv.appendChild(button);
+                list.appendChild(mainDiv);
             }
         }
+
+        
+        
     </script>
 
 </body>
