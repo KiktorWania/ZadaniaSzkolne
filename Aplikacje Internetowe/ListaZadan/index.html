@@ -30,24 +30,14 @@
         var form = document.querySelector("#newTask");
         var input = document.querySelector("#newTaskInput");        
 
-        form.addEventListener('submit', (e) =>{
-            e.preventDefault();
-
-            var tempTask = new Task(input.value, false);
-            storage.setItem(tempTask.id, tempTask.info);
-        });
-
         class Task{
             tekst;
             clicked;
-            info;
-            id = 0;
+            delate = false;
 
             constructor(tekst, clicked){
-                this.id++;
                 this.tekst = tekst;
                 this.clicked = clicked;
-                this.info = {tekst: tekst, clicked: clicked};
 
                 this.createDiv();
             }
@@ -55,24 +45,94 @@
             createDiv(){
                 var that = this;
                 var mainDiv = document.createElement('div');
+                mainDiv.classList.add("task");
                 mainDiv.innerHTML = this.tekst;
 
+                if(this.clicked)
+                    mainDiv.classList.add("clicked");
+
                 var button = document.createElement('button');
+                button.classList.add("taskButton");
                 
                 button.onclick = function(){
+                    that.delate = true;
+                    updateTasks();
                     list.removeChild(mainDiv);
+
                 }
 
                 mainDiv.onclick = function(){
                     that.clicked = !that.clicked;
-                    that.info.clicked = that.clicked;
-
-                    console.log(storage);
-
+                    mainDiv.classList.toggle("clicked");
+                    updateTasks();
                 }
-
                 mainDiv.appendChild(button);
                 list.appendChild(mainDiv);
+            }
+        }
+
+        var myTasks = [];
+
+        loadList();
+
+        form.addEventListener('submit', (e) =>{
+            e.preventDefault();
+
+            if(input.value == ""){
+                alert("Wpisz cos >:(");
+                return;
+            }
+
+            var tempTask = new Task(input.value, false, false);
+            myTasks.push(tempTask);
+            updateTasks();
+        });
+
+        function updateTasks(){
+            myTasks.forEach(task => {
+                if(task.delate == true){
+                    var temp = myTasks.filter(function(value, index, arr){
+                        return value != task;
+                    })
+
+                    myTasks = temp;
+                }
+            });
+
+            saveList();
+        }
+
+        function saveList(){
+            var file = '';
+
+            myTasks.forEach(task => {
+                var temp = JSON.stringify(task);
+                file += temp + '&';
+            });
+
+            storage.setItem("list", file);
+        }
+
+        function loadList(){
+            var list = storage.getItem("list");
+            
+            if(list != null){
+                var tasks = list.split('&');
+                tasks.pop();
+
+                var taskArr = [];
+
+                tasks.forEach(task => {
+                    var temp = JSON.parse(task);
+                    taskArr.push(temp);
+                });
+
+                taskArr.forEach(task => {
+                    var tempTask = new Task(task.tekst, task.clicked);
+                    myTasks.push(tempTask);
+                });
+            }else{
+                return;
             }
         }
         
