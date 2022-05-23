@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animacja taka o na 5</title>
+</head>
+<body style="background-color: #121212;">
+    <canvas width="1800" height="900" id="canvas" style="border: 1px solid black;"></canvas>
+
+
+    <script>
+        const canvas = document.querySelector("canvas");
+        const ctx = canvas.getContext("2d");
+
+
+        const colors = [["blue", "darkblue", "lightblue"],
+                        ["red", "darkred", "lightred"],
+                        ["green", "darkgreen", "lightgreen"],
+                        ["yellow", "darkyellow", "lightyellow"]];
+
+        balls = [];
+
+        let k = 0;
+
+        function los(){
+            return Math.floor(Math.random() * colors[0].length);
+        }
+
+        for (var i = 0; i < 100; i++){
+            const ball = {
+                x: Math.floor(Math.random()*(canvas.width - 40 + 1) + 20),
+                y: Math.floor(Math.random()*(canvas.height - 40 + 1) + 20),
+                dirX: Math.random() > 0.5 ? 1 : -1,
+                dirY: Math.random() > 0.5 ? 1 : -1,
+                radius: Math.floor(Math.random()*(40)),
+                color: colors[k][los()],
+                velocity: Math.floor(Math.random()*(3) + 1)
+            }
+
+            balls.push(ball);
+        }
+
+        function changeColors(){
+            k++;
+            if(k > 2){
+                k=0;
+            }
+
+            for(let el of balls){
+                el.color = colors[k][los()];
+            }
+        }
+        
+        canvas.addEventListener('click', event =>{
+            changeColors();
+        });
+
+        function draw(){
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            for(let el of balls){
+                if(el.x <= 0 + el.radius || el.x > canvas.width - el.radius) {
+                    el.dirX *= -1;
+                }
+                if (el.y <= 0 + el.radius || el.y > canvas.height - el.radius) {
+                    el.dirY *= -1;
+                }
+                el.x += el.dirX * el.velocity;
+                el.y += el.dirY * el.velocity;
+
+                ctx.beginPath();
+                ctx.strokeStyle = el.color;
+                ctx.arc(el.x, el.y, el.radius, 0, 2 * Math.PI);
+                ctx.stroke();
+            }
+            requestAnimationFrame(draw)
+        }
+
+        draw();
+    </script>
+</body>
+</html>
